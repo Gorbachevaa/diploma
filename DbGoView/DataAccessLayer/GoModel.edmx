@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="GoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="GoTerms">
+          <Key>
+            <PropertyRef Name="GO_ID" />
+          </Key>
+          <Property Name="GO_ID" Type="int" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="255" />
+          <Property Name="Go_definition" Type="nvarchar" MaxLength="750" />
+          <Property Name="ontology" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="HumanStruct">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DB_Object_Symbol" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="GOid" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Goa_human.dbo.is_a' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="is_a">
+          <Key>
+            <PropertyRef Name="id_term" />
+            <PropertyRef Name="GOid" />
+          </Key>
+          <Property Name="id_term" Type="int" Nullable="false" />
+          <Property Name="GOid" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Goa_human.dbo.part_of' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="part_of">
+          <Key>
+            <PropertyRef Name="id_term" />
+            <PropertyRef Name="GOid" />
+          </Key>
+          <Property Name="id_term" Type="int" Nullable="false" />
+          <Property Name="GOid" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="GoModelStoreContainer">
+          <EntitySet Name="GoTerms" EntityType="Self.GoTerms" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HumanStruct" EntityType="Self.HumanStruct" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="is_a" EntityType="Self.is_a" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [is_a].[id_term] AS [id_term], 
+    [is_a].[GOid] AS [GOid]
+    FROM [dbo].[is_a] AS [is_a]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="part_of" EntityType="Self.part_of" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [part_of].[id_term] AS [id_term], 
+    [part_of].[GOid] AS [GOid]
+    FROM [dbo].[part_of] AS [part_of]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="GoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="GoTerm">
+          <Key>
+            <PropertyRef Name="GO_ID" />
+          </Key>
+          <Property Name="GO_ID" Type="Int32" Nullable="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Go_definition" Type="String" MaxLength="750" FixedLength="false" Unicode="true" />
+          <Property Name="ontology" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="HumanStruct">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DB_Object_Symbol" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="GOid" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="is_a">
+          <Key>
+            <PropertyRef Name="id_term" />
+            <PropertyRef Name="GOid" />
+          </Key>
+          <Property Name="id_term" Type="Int32" Nullable="false" />
+          <Property Name="GOid" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="part_of">
+          <Key>
+            <PropertyRef Name="id_term" />
+            <PropertyRef Name="GOid" />
+          </Key>
+          <Property Name="id_term" Type="Int32" Nullable="false" />
+          <Property Name="GOid" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="GoDBContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="GoTerms" EntityType="Self.GoTerm" />
+          <EntitySet Name="HumanStructs" EntityType="Self.HumanStruct" />
+          <EntitySet Name="is_a" EntityType="Self.is_a" />
+          <EntitySet Name="part_of" EntityType="Self.part_of" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="GoModelStoreContainer" CdmEntityContainer="GoDBContext">
+          <EntitySetMapping Name="GoTerms">
+            <EntityTypeMapping TypeName="GoModel.GoTerm">
+              <MappingFragment StoreEntitySet="GoTerms">
+                <ScalarProperty Name="GO_ID" ColumnName="GO_ID" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="Go_definition" ColumnName="Go_definition" />
+                <ScalarProperty Name="ontology" ColumnName="ontology" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HumanStructs">
+            <EntityTypeMapping TypeName="GoModel.HumanStruct">
+              <MappingFragment StoreEntitySet="HumanStruct">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="DB_Object_Symbol" ColumnName="DB_Object_Symbol" />
+                <ScalarProperty Name="GOid" ColumnName="GOid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="is_a">
+            <EntityTypeMapping TypeName="GoModel.is_a">
+              <MappingFragment StoreEntitySet="is_a">
+                <ScalarProperty Name="id_term" ColumnName="id_term" />
+                <ScalarProperty Name="GOid" ColumnName="GOid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="part_of">
+            <EntityTypeMapping TypeName="GoModel.part_of">
+              <MappingFragment StoreEntitySet="part_of">
+                <ScalarProperty Name="id_term" ColumnName="id_term" />
+                <ScalarProperty Name="GOid" ColumnName="GOid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
